@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <link type="text/css" href="./static/css/style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <section id="app">
+        <div class="nav">
+            <input type="checkbox" id="nav-check">
+            <div class="nav-header">
+            <div class="nav-title">
+                HackerNews
+            </div>
+            </div>
+            <div class="nav-btn">
+            <label for="nav-check">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            </div>
+            
+            <div class="search-container">
+                <form>
+                <input @input="search()" type="text" v-model="searchTerm" placeholder="Search.." name="search">
+                <!-- <button type="submit"><i class="fa fa-search"></i></button> -->
+                </form>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Filter By Type</button>
+                <div class="dropdown-content">
+                  <a @click.prevent="filterByType($event)" href="#">All</a>
+                  <a @click.prevent="filterByType($event)" href="#">Story</a>
+                  <a @click.prevent="filterByType($event)" href="#">Job</a>
+                  <a @click.prevent="filterByType($event)" href="#">Comment</a>
+                  <a @click.prevent="filterByType($event)" href="#">Poll</a>
+                  <a @click.prevent="filterByType($event)" href="#">Poll Option</a>
+                </div>
+              </div>
+        </div>
+        <div class="container">
+            <div class="gal-tabs">
+                <button @click.prevent="getItems(previousLink)" :disabled="!hasPrevious" class="prv">Prev</button>
+                <span class="galcount"></span>Total Results: {{resultCount}}<span class="galtotal"></span>
+                <button @click.prevent="getItems(nextLink)" :disabled="!hasNext" class="nxt">Next</button>
+            </div>
+            
+            <main class="grid">
+            <article v-for="(ele,index) in items">
+                <img v-if="ele.url" src="https://images-na.ssl-images-amazon.com/images/I/41zMy7rd4yL.png" alt="Sample photo">
+                <img v-else src="https://teleanu.com/wp-content/uploads/2017/04/localhost.png" alt="Local content"> 
+                <div class="text">
+                <h3 v-if="ele.url"><a :href="ele.url">{{ele.title}}</a></h3>
+                <h3 v-else>{{ele.title}}</h3>
+                <p v-if="ele.content">{{ele.content}}</p>
+                <p>By: {{ele.by}}</p>
+                <p>Type: {{ele.type}}</p>
+                <!-- <a href="{ele.url}" class="btn btn-primary btn-block">Read More</a> -->
+                </div>
+            </article>
+            </main>
+            <div class="gal-tabs">
+                <button @click.prevent="getItems(previousLink)" :disabled="!hasPrevious" class="prv">Prev</button>
+                <span class="galcount"></span>Total Results: {{resultCount}}<span class="galtotal"></span>
+                <button @click.prevent="getItems(nextLink)" :disabled="!hasNext" class="nxt">Next</button>
+            </div>
+        </div>
+    </section>
+      <script src="./static/js/vue.js"></script>
+      <script src="./static/js/app.js"></script>
+</body>
