@@ -1,6 +1,7 @@
 # QuickCheck Python Developer Case Study
 
 This repository houses the code for the QuickCheck Python Developer Case Study - A Django application for indexing items from Hackernews and exposing them through an API with CRUD functionalities e.t.c.
+
 Case study can be found [here](https://form.jotform.com/211856214308452) 
 
 ## Retrieve code
