@@ -1,6 +1,7 @@
 # QuickCheck Python Developer Case Study
 
 This repository houses the code for the QuickCheck Python Developer Case Study - A Django application for indexing items from Hackernews and exposing them through an API with CRUD functionalities e.t.c.
+Case study can be found [here](https://form.jotform.com/211856214308452) 
 
 ## Retrieve code
 
@@ -54,19 +55,24 @@ This project requires a `.env` file with the following variables, please create 
 -   While still in `src` folder, run `$ python manage.py ingest_first_time` This initially ingests the latest 100 items from Hackernews into the local DB according to requirements.
 -   While still in `src` folder, run `$ python manage.py collectstatic` This collects static files from around the app and puts into the `STATIC_ROOT` configuration defined in `qc_interview_test.settings.base` in order to be able to serve them. Note: This is not recommended for production.
 -   While still in `src` folder, run `$ python manage.py runserver` This should now start the django app at the default localhost:8000
--   run `celery -A qc_interview_test.settings.celery.CELERY beat -l info` in a new terminal inside `src` folder to start celery beat for periodic(5 minutes interval) indexing of new content.
+-   In a new terminal, cd into `src` and run `celery -A qc_interview_test.settings.celery.CELERY beat -l info` to start celery beat for periodic(5 minutes interval) indexing of new content.
 
 
 ## Front End
 
-This App contains a frontend for listing, searching and filtering indexed items. It is located in the `hackernews_frontend` directory. It is recommended to access this frontend over http, to do this, using your preferred http local server tool(e.g Liveserver for VSCode), start the server in the `hackernews_frontend` root. Once this is started, take note of the port, and add it to the `CORS_ORIGIN_WHITELIST` configuration  located at `qc_interview_test.settings.dev`. This is to allow Cross-Origin Resource Sharing(CORS) between the frontend and backend services.
+This app contains a simple frontend for listing, searching and filtering indexed items. It is located in the `hackernews_frontend` directory. It is recommended to access this frontend over http, to do this, using your preferred http local server tool(e.g Liveserver for VSCode), start the server in the `hackernews_frontend` root. Once this is started, take note of the port, and add it to the `CORS_ORIGIN_WHITELIST` configuration  located at `qc_interview_test.settings.dev`. This is to allow Cross-Origin Resource Sharing(CORS) between the frontend and backend services.
 
 
-### Endpoints
+## Endpoints
 
-The app exposes the following endpoints:
+The full documentation can be found at `/api/docs`, the following is a rundown of available endpoints:
+
 -  GET `/api/v1/hackernews/items/`  - This endpoint fetches paginated results of all indexed and locally created items. It also supports filtering items by type(e.g story, job, poll e.t.c) using a query parameter `type`.
--  POST `/api/v1/hackernews/add/` - This endpoint is used to create a new item locally as against fetching from Hackernews. To see the full documentation, including example payload navigate to `/api/docs/`.
+
+-  POST `/api/v1/hackernews/add/` - This endpoint is used to create a new item locally as against fetching from Hackernews.
+
 -  GET `/api/v1/hackernews/search/` - This endpoint is used to search for items by title/content. It requires a `search` query parameter with the search keyword being its value.
+
 -  DELETE `/api/v1/hackernews/delete/<item_id>/` - This endpoint deletes a given item, provided it wasn't indexed externally from Hackernews, i.e it was locally created.
--  PUT ``/api/v1/hackernews/update/` - This endpoint updates a given item, provided it wasn't indexed externally from Hackernews, i.e it was locally created. To see the full documentation, including example payload navigate to `/api/docs/`.
+
+-  PUT `/api/v1/hackernews/update/` - This endpoint updates a given item, provided it wasn't indexed externally from Hackernews, i.e it was locally created.
