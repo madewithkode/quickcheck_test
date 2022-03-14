@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from hackernews.api.serializer import StorySerializer, StoryTypeFilterSerializer, UpdateStorySerializer
+from hackernews.api.serializer import StorySerializer, StoryTypeFilterSerializer
 from hackernews.models import Hackernews
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -7,6 +7,7 @@ from rest_framework import filters
 from hackernews.utils import CustomPagination
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
 
 # Create your views here.
 
@@ -41,11 +42,12 @@ class NewsSearchByTitle(ListAPIView):
 
 class CreateItem(APIView):
     """
-    Create new item/news.
+        This endpoint creates new item/news locally.
     """
 
     serializer_class = StorySerializer
 
+    @swagger_auto_schema(request_body=StorySerializer)
     def post(self, request):
 
         serializer = self.serializer_class(data=request.data)
@@ -75,26 +77,24 @@ class UpdateItem(APIView):
     Update items created via the API not fetched from HackerNews.
     """
 
-    serializer_class = UpdateStorySerializer
-    request_serializer_class = StorySerializer
+    serializer_class = StorySerializer
 
+    @swagger_auto_schema(request_body=StorySerializer)
     def put(self, request):
 
-        request_serializer = self.request_serializer_class(data=request.data)
-        request_serializer.is_valid(raise_exception=True)
-
-        request_data = request_serializer.save()
-
-        if not request_data:
+        if not 'id' in request.data or request.data['id'] == None:
             return Response(
-                {'status': False, 'message': 'An error occurred, try again'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {
+                    'status': False,
+                    'message': 'id field is required to update an item.'
+                },
+                status=status.HTTP_200_OK,
             )
 
         try:
            # fetch the record instance
             record = Hackernews.objects.get(
-                id=request_data['id']
+                id=request.data['id']
             )
 
             # confirm record is not fetched from HN and deny edit access if true.
@@ -132,7 +132,8 @@ class CreateItem(APIView):
     """
 
     serializer_class = StorySerializer
-
+    
+    @swagger_auto_schema(request_body=StorySerializer)
     def post(self, request):
         
         if not 'content' in request.data or request.data['content'] == None:
@@ -180,7 +181,7 @@ class DeleteItem(APIView):
     """
         Delete locally created item.
     """
-
+    @swagger_auto_schema()
     def delete(self, request, item_id):
 
         try:

@@ -42,20 +42,6 @@ class StorySerializer(serializers.Serializer):
         except Exception as e:
             raise Exception("An error ocured while indexing data {}".format(e))
 
-class UpdateStorySerializer(StorySerializer):
-    """
-        Serializer for updating stories.
-    """
-
-    # do not allow external modification of protected fields
-    id = None
-    url = None
-    indexed_time = None
-    published_time = None
-
-    def create(self, validated_data):
-        """Overridden."""
-
     def update(self, instance, validated_data):
         instance.content = validated_data['content'] if validated_data['content'] else instance.content
         instance.title = validated_data['title'] if validated_data['title'] else instance.title
@@ -65,7 +51,6 @@ class UpdateStorySerializer(StorySerializer):
         instance.save()
 
         return instance
-
 
 class StoryTypeFilterSerializer(serializers.ModelSerializer):
     """

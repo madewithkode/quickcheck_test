@@ -3,3 +3,4 @@ virtualenv
 *.pyc
 .vscode
 .env
+static_root
